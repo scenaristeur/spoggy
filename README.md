@@ -1,3 +1,7 @@
+[Demo](http://spoggy0.firebaseapp.com) , en mode solo, non synchronisé, fonctionnalités réduites.
+
+
+
 Le code source de l'application SPOGGY sera bientôt disponible. 
 Pour être informé de sa sortie,
 cliquez sur "Watch" en haut à droite
