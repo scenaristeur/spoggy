@@ -1,5 +1,11 @@
 [Demo](http://spoggy0.firebaseapp.com) , en mode solo, non synchronisé, fonctionnalités réduites.
 
+Disponible : 
+
+Import : commande /i
+
+Export : commande /e
+
 
 
 Le code source de l'application SPOGGY sera bientôt disponible. 
