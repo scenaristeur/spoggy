@@ -10,6 +10,7 @@ function spoglevel(name, mode, demo) { // name,  demo or not, n3 or not,
   //this.db = levelgraph(level("data/"+this.dbName));
   this.db = sublevel(level("data/"+this.dbName));
   this.graph0 = this.createGraph('graph0');
+  this.createGraph('test');
 
 }
 

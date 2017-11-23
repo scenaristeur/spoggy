@@ -6,6 +6,8 @@
 <link rel="import" href="../spog-socket/spog-socket.html">
 <link rel="import" href="../spog-graphe/spog-graphe.html">
 <link rel="import" href="../spog-chat/spog-chat.html">
+<link rel="import" href="../spog-room/spog-room.html">
+<link rel="import" href="../spog-eye/spog-eye.html">
 
 <dom-module id="spoggy-app">
   <template>
@@ -14,19 +16,42 @@
     position: fixed;
     right: 25px;
     top: 25px;
+    z-index: 99;
+  }
+  #fabgraphe {
+    position: fixed;
+    right: 25px;
+    top: 85px;
+    z-index: 99;
+  }
+  #fabroom {
+    position: fixed;
+    right: 25px;
+    top: 145px;
+    z-index: 99;
+  }
+  #fabeye {
+    position: fixed;
+    right: 25px;
+    top: 205px;
+    z-index: 99;
   }
   </style>
 
-  [[status]]
+  <spog-socket socket="{{socket}}" status="{{status}}"></spog-socket>
+  <paper-fab id="fabchat" on-tap="toggleChat"  label="😻"></paper-fab>
+  <paper-fab id="fabgraphe" on-tap="toggleGraphe"  label="Graph"></paper-fab>
+  <paper-fab id="fabroom" on-tap="toggleRoom"  label="Room"></paper-fab>
+  <paper-fab id="fabeye" on-tap="toggleEye"  label="Eye"></paper-fab>
+
   <div hidden$="[[connected]]">[[status]]</div>
 
-  <spog-socket socket="{{socket}}" status="{{status}}"></spog-socket>
-  <spog-chat  id="chat" hidden$="[[visibleChat]]"  socket="[[socket]]" status="[[status]]" ></spog-chat>
-  <spog-graphe  hidden$="[[!visibleChat]]"  socket="[[socket]]" status="[[status]]" actionstosend="{{actionstosend}}"></spog-graphe>
-  <paper-fab id="fabchat" on-tap="toggleChat"  label="😻"></paper-fab>
 
+  <spog-chat hidden$="[[!visibleChat]]" id="chat"   socket="[[socket]]" status="[[status]]" ></spog-chat>
+  <spog-room hidden$="[[!visibleRoom]]" socket="[[socket]]" ></spog-room>
+  <spog-eye hidden$="[[!visibleEye]]" id="eye" data="{{eyedata}}" infered="{{infered}}" ></spog-eye>
+    <spog-graphe hidden$="[[!visibleGraphe]]"  socket="[[socket]]" status="[[status]]" actionstosend="{{actionstosend}}"></spog-graphe>
 
-  <h2>Hello [[prop1]]!</h2>
   choix de langue : [[lang]]
 </template>
 
@@ -58,10 +83,7 @@ class SpoggyApp extends Polymer.Element {
         type: Number,
         value: 1000       // 15ms selon source, tempo pour envoi du snapshot par le serveur pour un jeu
       },
-      visibleChat: {
-        type: Boolean,
-        value : true
-      },
+
       actionstosend: {
         type: Array,
         value:[]
@@ -73,7 +95,23 @@ class SpoggyApp extends Polymer.Element {
       lang: {
         type: String,
         value: "fr"
-      }
+      },
+      visibleChat: {
+        type: Boolean,
+        value : false
+      },
+      visibleGraphe: {
+        type: Boolean,
+        value : true
+      },
+      visibleRoom: {
+        type: Boolean,
+        value : false
+      },
+      visibleEye: {
+        type: Boolean,
+        value : false
+      },
     };
   }
 
@@ -111,9 +149,7 @@ class SpoggyApp extends Polymer.Element {
         this.connected = false;
       }
     }
-    toggleChat(){
-      this.visibleChat = !this.visibleChat;
-    }
+
 
     recupParams(){
       var params = (function(a) {
@@ -131,7 +167,18 @@ class SpoggyApp extends Polymer.Element {
     this.params = params;
   }
 
-
+  toggleChat(){
+    this.visibleChat = !this.visibleChat;
+  }
+  toggleGraphe(){
+    this.visibleGraphe = !this.visibleGraphe;
+  }
+  toggleRoom(){
+    this.visibleRoom = !this.visibleRoom;
+  }
+  toggleEye(){
+    this.visibleEye = !this.visibleEye;
+  }
 }
 
 window.customElements.define(SpoggyApp.is, SpoggyApp);

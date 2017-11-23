@@ -12,9 +12,7 @@
   <template>
   <style include="chat-styles"></style>
   <style>
-  :host {
-    display: block;
-  }
+
   </style>
   <h2>Hello [[prop1]]!</h2>
   [[room]]
@@ -56,6 +54,7 @@ class SpogChat extends Polymer.Element {
     s.on('updateroom', function (data) {
       console.log(data);
     });
+    console.log(s);
   }
 }
 
