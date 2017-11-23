@@ -1,36 +1,64 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../../bower_components/paper-dialog-behavior/paper-dialog-behavior.html">
+<link rel="import" href="styles/chat-styles.html">
+
 <dom-module id="spog-chat">
   <template>
-    <style>
-      :host {
-        display: block;
-      }
-    </style>
-    <h2>Hello [[prop1]]!</h2>
-  </template>
+  <style include="chat-styles"></style>
+  <style>
+  :host {
+    display: block;
+  }
+  </style>
+  <h2>Hello [[prop1]]!</h2>
+  [[room]]
+</template>
 
-  <script>
-    /**
-     * `spog-chat`
-     *
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class SpogChat extends Polymer.Element {
-      static get is() { return 'spog-chat'; }
-      static get properties() {
-        return {
-          prop1: {
-            type: String,
-            value: 'spog-chat'
-          }
-        };
-      }
-    }
+<script>
+/**
+* `spog-chat`
+*
+*
+* @customElement
+* @polymer
+* @demo demo/index.html
+*/
+class SpogChat extends Polymer.Element {
+  static get is() { return 'spog-chat'; }
+  static get properties() {
+    return {
+      prop1: {
+        type: String,
+        value: 'spog-chat'
+      },
+      socket: {
+        type: Object,
+        observer: "_socketChanged"
+      },
+    };
+  }
 
-    window.customElements.define(SpogChat.is, SpogChat);
-  </script>
+  ready() {
+    super.ready();
+    //  this.$.usernameInput.focus();
+  }
+  _socketChanged(s){
+    var app = this;
+    s.on('config', function (data) {
+      console.log(data);
+    });
+    s.on('updateroom', function (data) {
+      console.log(data);
+    });
+  }
+}
+
+window.customElements.define(SpogChat.is, SpogChat);
+</script>
 </dom-module>

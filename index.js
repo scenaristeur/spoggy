@@ -21,7 +21,7 @@ app.use(express.static(__dirname + '/public'));
 var SpogTools = require('./spogtools');
 var SpogLevel = require('./spoglevel');
 var st = new SpogTools(debug);
-var sl = new SpogLevel("smagBoose1"); // name, mode (n3 or null), demo or not
+var sl = new SpogLevel("smagBoose0"); // name, mode (n3 or null), demo or not
 st.log(sl);
 var config = {};
 //FIN SPOG LEVEL BDD
@@ -49,8 +49,10 @@ st.log("ready");
 
 // EVENEMENTS
 function connexion(socket){
-  st.log(socket);
+
   socket.emit('config', config);
 socket.join(config.room);
-socket.emit('updateroom', config.room);
+
+socket.emit('updateroom', {rooms:config.graphListe, room:config.room});
+  st.log(socket);
 }

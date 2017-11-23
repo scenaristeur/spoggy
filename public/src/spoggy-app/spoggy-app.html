@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<!--<link rel="import" href="../../bower_components/paper-fab-menu/paper-fab-menu.html" />-->
 
 <link rel="import" href="../spog-socket/spog-socket.html">
 <link rel="import" href="../spog-graphe/spog-graphe.html">
@@ -15,6 +16,7 @@
     top: 25px;
   }
   </style>
+
   [[status]]
   <div hidden$="[[connected]]">[[status]]</div>
 
@@ -22,6 +24,7 @@
   <spog-chat  id="chat" hidden$="[[!visibleChat]]"  socket="[[socket]]" status="[[status]]" ></spog-chat>
   <spog-graphe  hidden$="[[visibleChat]]"  socket="[[socket]]" status="[[status]]" actionstosend="{{actionstosend}}"></spog-graphe>
   <paper-fab id="fabchat" on-tap="toggleChat"  label="😻"></paper-fab>
+
 
   <h2>Hello [[prop1]]!</h2>
   choix de langue : [[lang]]
