@@ -21,8 +21,8 @@
   <div hidden$="[[connected]]">[[status]]</div>
 
   <spog-socket socket="{{socket}}" status="{{status}}"></spog-socket>
-  <spog-chat  id="chat" hidden$="[[!visibleChat]]"  socket="[[socket]]" status="[[status]]" ></spog-chat>
-  <spog-graphe  hidden$="[[visibleChat]]"  socket="[[socket]]" status="[[status]]" actionstosend="{{actionstosend}}"></spog-graphe>
+  <spog-chat  id="chat" hidden$="[[visibleChat]]"  socket="[[socket]]" status="[[status]]" ></spog-chat>
+  <spog-graphe  hidden$="[[!visibleChat]]"  socket="[[socket]]" status="[[status]]" actionstosend="{{actionstosend}}"></spog-graphe>
   <paper-fab id="fabchat" on-tap="toggleChat"  label="😻"></paper-fab>
 
 
@@ -80,6 +80,9 @@ class SpoggyApp extends Polymer.Element {
   ready() {
     super.ready();
     var app=this;
+    this.recupParams();
+    console.log(this.params);
+
     var tickInterval = setInterval(function() {
       if (app.connected){
         //  console.log("tick spog-app");
@@ -112,9 +115,25 @@ class SpoggyApp extends Polymer.Element {
       this.visibleChat = !this.visibleChat;
     }
 
-
+    recupParams(){
+      var params = (function(a) {
+        if (a == "") return {};
+        var b = {};
+        for (var i = 0; i < a.length; ++i)
+        {        var p=a[i].split('=', 2);
+        if (p.length == 1)
+        b[p[0]] = "";
+        else
+        b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+      }
+      return b;
+    })(window.location.search.substr(1).split('&'));
+    this.params = params;
   }
 
-  window.customElements.define(SpoggyApp.is, SpoggyApp);
-  </script>
+
+}
+
+window.customElements.define(SpoggyApp.is, SpoggyApp);
+</script>
 </dom-module>
