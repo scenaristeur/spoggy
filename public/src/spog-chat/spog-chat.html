@@ -1,0 +1,36 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="spog-chat">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `spog-chat`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class SpogChat extends Polymer.Element {
+      static get is() { return 'spog-chat'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'spog-chat'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(SpogChat.is, SpogChat);
+  </script>
+</dom-module>

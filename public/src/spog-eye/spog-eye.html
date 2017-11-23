@@ -1,0 +1,36 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="spog-eye">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `spog-eye`
+     *
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class SpogEye extends Polymer.Element {
+      static get is() { return 'spog-eye'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'spog-eye'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(SpogEye.is, SpogEye);
+  </script>
+</dom-module>

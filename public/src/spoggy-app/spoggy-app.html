@@ -1,19 +1,30 @@
 <link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
 <link rel="import" href="../spog-socket/spog-socket.html">
+<link rel="import" href="../spog-graphe/spog-graphe.html">
+<link rel="import" href="../spog-chat/spog-chat.html">
 
 <dom-module id="spoggy-app">
   <template>
   <style>
-  :host {
-    display: block;
+  #fabchat {
+    position: fixed;
+    right: 25px;
+    top: 25px;
   }
   </style>
   [[status]]
   <div hidden$="[[connected]]">[[status]]</div>
 
   <spog-socket socket="{{socket}}" status="{{status}}"></spog-socket>
+  <spog-chat  id="chat" hidden$="[[!visibleChat]]"  socket="[[socket]]" status="[[status]]" ></spog-chat>
+  <spog-graphe  hidden$="[[visibleChat]]"  socket="[[socket]]" status="[[status]]" actionstosend="{{actionstosend}}"></spog-graphe>
+  <paper-fab id="fabchat" on-tap="toggleChat"  label="😻"></paper-fab>
 
   <h2>Hello [[prop1]]!</h2>
+  choix de langue : [[lang]]
 </template>
 
 <script>
@@ -30,7 +41,8 @@ class SpoggyApp extends Polymer.Element {
         value: 'spoggy-app'
       },
       socket: {
-        type: Object
+        type: Object,
+        observer: "_socketChanged"
       },
       status:{
         type: String,
@@ -55,6 +67,10 @@ class SpoggyApp extends Polymer.Element {
         type: Boolean,
         value : false
       },
+      lang: {
+        type: String,
+        value: "fr"
+      }
     };
   }
 
@@ -70,6 +86,15 @@ class SpoggyApp extends Polymer.Element {
           app.actionstosend = [];
         }}
       }, this.tickDelay);
+    }
+    _socketChanged(s){
+      var app = this;
+      s.on('config', function (data) {
+        console.log(data);
+      });
+      s.on('updateroom', function (data) {
+        console.log(data);
+      });
     }
 
     _consoleStatus(newValue, oldValue){
