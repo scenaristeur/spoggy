@@ -10,14 +10,20 @@
 <link rel="import" href="../../bower_components/color-picker/color-picker.html">
 <link rel="import" href="../../bower_components/color-picker/color-element.html">
 <link rel="import" href="../../bower_components/iron-collapse-button/iron-collapse-button.html">
+<link rel="import" href="../spog-eye/spog-eye.html">
+<link rel="import" href="../spog-source/spog-source.html">
+
+
+<!--
+A COMPLETER AVEC  DANS LIB  : IMPORT / EXPORT, COMMANDES -->
 
 <script src="../../bower_components/vis/dist/vis.min.js"></script>
-<script src="lib/commandes.js"></script>
-<script src="lib/import-export.js"></script>
-
-
 <link rel="import" href="styles/vis-styles.html">
 <link rel="import" href="styles/graphe-styles.html">
+<link rel="import" href="../../bower_components/paper-dialog-behavior/paper-dialog-shared-styles.html">
+
+<script src="lib/commandes.js"></script>
+<script src="lib/import-export.js"></script>
 
 <dom-module id="spog-graphe">
   <template>
@@ -27,14 +33,23 @@
   #fabsetting {
     position: fixed;
     right: 25px;
-    top: 265px;
+    top: 100px;
   }
-
+  #fabEye {
+    position: fixed;
+    right: 25px;
+    top: 175px;
+  }
   paper-button{background-color:#0D578B;color:white}
   </style>
 
+  <div hidden$="{{eyehidden}}">
+    <spog-eye id="eye" data="{{eyedata}}" infered="{{infered}}"></spog-eye>
+  </div>
+
   <paper-dialog id="popupTtl">
     <h3>Export ttl <paper-button ontap="_pageAide">?</paper-button><paper-button dialog-dismiss raised>X</paper-button></h3>
+
     <paper-input id="inputFileNameToSaveAs" label="Nom du fichier à sauvegarder (.ttl)"></paper-input>
     <paper-button raised on-tap="saveTextAsFile">Exporter le fichier Ttl</paper-button>
     <paper-dialog-scrollable>
@@ -42,15 +57,22 @@
     </paper-dialog-scrollable>
   </paper-dialog>
 
+
+
   <paper-dialog id="nodePopUp" backdrop transition="core-transition-bottom">
+
     <div horizontal start-justified start layout >
+
       <core-icon icon="thumb-up" style="height: 150px; width:150px;color: #0D578B;"></core-icon>
       <div style="padding-left:20px" vertical start-justified start layout wrap>
+
+        <!--<h1 style="margin: 0;color: #0D578B;">SUCCESS!</h1>-->
         <h2 id="nodeOperation" style="margin: 0;color: #0D578B;">Ajouter ou modifier un noeud</h2>
         <p>
           <paper-input id="nodeLabel" label="Nom du noeud"></paper-input>
           <!-- checkbox style : https://codepen.io/sevilayha/pen/jCmgE -->
         </p>
+
 
         <iron-collapse-button>
           <h3 slot="collapse-trigger" style="margin: 0;color: #0D578B;">Forme</h3>
@@ -94,6 +116,7 @@
           </div>
         </iron-collapse-button>
 
+
         <iron-collapse-button>
           <h3 slot="collapse-trigger" style="margin: 0;color: #0D578B;">Type</h3>
           <div slot="collapse-content">
@@ -117,6 +140,7 @@
       </div>
     </div>
   </paper-dialog>
+
 
   <paper-dialog id="edgePopUp" backdrop transition="core-transition-bottom">
     <div horizontal start-justified start layout >
@@ -157,6 +181,7 @@
     </div>
   </paper-dialog>
 
+
   <div id="settings" hidden$="{{settinghidden}}">
     <div>  <!--AJOUTER LE CHANGEMENT DE PHYSICS -->
       Gravité   <paper-slider  min="0" max="0.01" value="{{gravityValue}}" step="0.001" on-change="_changeGravity" ></paper-slider>
@@ -173,9 +198,8 @@
   </div>
   <div id="mynetwork"></div>
   <paper-fab id="fabsetting" on-tap="_toggleSettings"  label="set"></paper-fab>
-  <!--<paper-fab id="fabEye" on-tap="_toggleEye"  label="Eye"></paper-fab>-->
+  <paper-fab id="fabEye" on-tap="_toggleEye"  label="Eye"></paper-fab>
   <input id="inputMessage" class="inputMessage" on-change="traiteMessage" placeholder="Tapez votre triplet ici, précédé de '::' ou une commande : '/e' pour exporter, '/t' pour exporter au format .ttl, '/i' pour importer" />
-
 </template>
 
 <script>
@@ -192,142 +216,169 @@ class SpogGraphe extends Polymer.Element {
   static get properties() {
     return {
       actionstosend: {
-          type: Array,
-          value: [],
-          notify: true
-        },
-        socket: {
-          type: Object,
-          observer: "_socketChanged"
-        },
-        tickDelay: {
-          type: Number,
-          value: 100         // 15ms selon source, tempo pour envoi du snapshot par le serveur
-        },
-        db2populate:{
-          type: Array,
-          value: []
-        },
-        gravityValue :{
-          type : Number,
-          value: 0.001
-        },
-        springLengthValue :{
-          type : Number,
-          value: 220
-        },
-        springConstantValue :{
-          type : Number,
-          value: 0.05
-        },
-        nodeDistanceValue :{
-          type : Number,
-          value: 400
-        },
-        dampingValue :{
-          type : Number,
-          value: 0.08
-        },
-        fusekiresults: {
-          type: Array,
-          observer: '_fusekiresultsChanged'
-        },
-        settinghidden:{
-          type: Boolean,
-          value: true
-        },
-        eyehidden:{
-          type: Boolean,
-          value: true
-        },
-        infered:{
-          type: Array,
-          value:[],
-          observer: '_inferedChanged'
-        },
-        value: {
-          type: String,
-          value: "rgb(173,208,255)"
-        } ,
-        selectedShape: {
-          type: String,
-          value: "ellipse"
-        },
-        selectedType: {
-          type: String,
-          value: "node"
-        }
+        type: Array,
+        value: [],
+        notify: true
+      },
+      socket: {
+        type: Object,
+        observer: "_socketChanged"
+      },
+      tickDelay: {
+        type: Number,
+        value: 100         // 15ms selon source, tempo pour envoi du snapshot par le serveur
+      },
+      db2populate:{
+        type: Array,
+        value: []
+      },
+      gravityValue :{
+        type : Number,
+        value: 0.001
+      },
+      springLengthValue :{
+        type : Number,
+        value: 220
+      },
+      springConstantValue :{
+        type : Number,
+        value: 0.05
+      },
+      nodeDistanceValue :{
+        type : Number,
+        value: 400
+      },
+      dampingValue :{
+        type : Number,
+        value: 0.08
+      },
+      fusekiresults: {
+        type: Array,
+        observer: '_fusekiresultsChanged'
+      },
+      settinghidden:{
+        type: Boolean,
+        value: true
+      },
+      eyehidden:{
+        type: Boolean,
+        value: true
+      },
+      infered:{
+        type: Array,
+        value:[],
+        observer: '_inferedChanged'
+      },
+      value: {
+        type: String,
+        value: "rgb(173,208,255)"
+      } ,
+      selectedShape: {
+        type: String,
+        value: "ellipse"
+      },
+      selectedType: {
+        type: String,
+        value: "node"
+      },
 
-    };
-  }
-
-  initialise(){
-    var app = this;
-    app.colorValue = "rgb(173,208,255)";
-    app.selectedShape = "ellipse";
-    app.selectedType = "node";
-    app.network = this.networkDivInitialize(app.$.mynetwork, app);
-    var network = app.network;
-    // When possible, use afterNextRender to defer non-critical    // work until after first paint.
-    /*Polymer.RenderStatus.afterNextRender(this, function() {
-    //  console.log(this.network);
-    //  this.network.fit();
-    this.network.moveTo(this.network.body.data.nodes.get(1));
-  });*/
-
-  app.tickInterval = setInterval(function() {
-    if ((app.db2populate.length > 0) && (app.network != undefined)) {
-      console.log(app.db2populate.length );
-      //  console.log(app.network);
-      app.populateVis(app.db2populate, app.network);
-      //log(app.db2populate.length + "/" + app.tiplets2popLength);
-      app.network.fit();
-    }
-
-    if ((app.data != app.network.body.data)  && !app.eyehidden){
-      app.data = [];
-      app.data = app.network.body.data;
-      console.log(app.data);
-    }
-  }, app.tickDelay);
-  app.network.on("selectNode", function(params) {
-    console.log("select");
-    console.log(params);
-    if (params.nodes.length == 1) {
-
-      if (network.isCluster(params.nodes[0]) == true) {
-        network.openCluster(params.nodes[0]);
-      }else if (params.nodes[0] == 7) {
-        app._toggleDesc();
-      }else {
-        var node = network.body.data.nodes.get(params.nodes[0]);
-        console.log(node);
-        if (node.type == "graph" ){
-          // AJOUTER UN LIEN DANS LE NOEUD AVEC SVG : VISJS, html in node & http://apike.ca/prog_svg_web_links.html
-          console.log(node.label);
-          var txt;
-          var r =confirm('Basculer sur le graphe '+node.label+'?');
-          if (r == true) {
-            txt = "You pressed OK!";
-            app.socket.emit("changeGraph", node.id);
-          } else {
-            txt = "You pressed Cancel!";
-          }
-          console.log(txt);
-
-        }
-      }
-    }
-  });
-  app._toggleDesc();
-  console.log(app.network);
+      /*  nodes:{
+      type: Array,
+      notify: true
+    },
+    edges:{
+    type: Array,
+    notify: true
+  },
+  network:{
+  notify: true
+},
+data:{
+type: Object,
+notify: true,
+computed: '_networkDataChanged(network.body.data)'
+},*/
+};
 }
+
+/*
+networkDataChanged(){
+console.log(this.network.body.data.nodes);
+console.log(this.network.body.data.edges);
+this.set('nodes', this.network.body.data.nodes);
+this.set('edges', this.network.body.data.edges);
+}*/
+
+
 
 ready() {
   super.ready();
-  this.initialise();
-}
+  this.colorValue = "rgb(173,208,255)";
+  this.selectedShape = "ellipse";
+  this.selectedType = "node";
 
+  this.network = this.networkDivInitialize(this.$.mynetwork, this);
+  // When possible, use afterNextRender to defer non-critical    // work until after first paint.
+  /*Polymer.RenderStatus.afterNextRender(this, function() {
+  //  console.log(this.network);
+  //  this.network.fit();
+  this.network.moveTo(this.network.body.data.nodes.get(1));
+});*/
+var app = this;
+app.tickInterval = setInterval(function() {
+  if ((app.db2populate.length > 0) && (app.network != undefined)) {
+    console.log(app.db2populate.length );
+    //  console.log(app.network);
+    app.populateVis(app.db2populate, app.network);
+    //log(app.db2populate.length + "/" + app.tiplets2popLength);
+    app.network.fit();
+  }
+
+  if ((app.data != app.network.body.data)  && !app.eyehidden){
+    app.data = [];
+    app.data = app.network.body.data;
+    console.log(app.data);
+  }
+}, app.tickDelay);
+var network = this.network;
+this.network.on("selectNode", function(params) {
+  console.log("select");
+  console.log(params);
+  if (params.nodes.length == 1) {
+
+    if (network.isCluster(params.nodes[0]) == true) {
+      network.openCluster(params.nodes[0]);
+    }else if (params.nodes[0] == 7) {
+      app._toggleDesc();
+    }else {
+      var node = network.body.data.nodes.get(params.nodes[0]);
+      console.log(node);
+      if (node.type == "graph" ){
+        // AJOUTER UN LIEN DANS LE NOEUD AVEC SVG : VISJS, html in node & http://apike.ca/prog_svg_web_links.html
+        console.log(node.label);
+        var txt;
+        var r =confirm('Basculer sur le graphe '+node.label+'?');
+        if (r == true) {
+          txt = "You pressed OK!";
+          app.socket.emit("changeGraph", node.id);
+        } else {
+          txt = "You pressed Cancel!";
+        }
+        console.log(txt);
+
+      }
+    }
+  }
+});
+this._toggleDesc();
+console.log(this.network);
+/*
+this.nodes = [];
+this.nodes = this.network.body.data.nodes;
+this.edges = [];
+this.edges = this.network.body.data.edges;*/
+
+}
 
 traiteMessage(){
   var message = this.$.inputMessage.value;
@@ -471,7 +522,6 @@ _socketChanged(s){
   console.log(app.data);*/
 
 }
-
 
 _fusekiresultsChanged(fusekiTriplets, oldValue){
   console.log(fusekiTriplets);
@@ -1556,6 +1606,7 @@ setTimeout(function(){
   window.URL.revokeObjectURL(downloadLink);
 }, 100);
 }
+
 
 
 }
