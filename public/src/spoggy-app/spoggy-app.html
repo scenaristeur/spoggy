@@ -1,0 +1,92 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../spog-socket/spog-socket.html">
+
+<dom-module id="spoggy-app">
+  <template>
+  <style>
+  :host {
+    display: block;
+  }
+  </style>
+  [[status]]
+  <div hidden$="[[connected]]">[[status]]</div>
+
+  <spog-socket socket="{{socket}}" status="{{status}}"></spog-socket>
+
+  <h2>Hello [[prop1]]!</h2>
+</template>
+
+<script>
+/**
+* @customElement
+* @polymer
+*/
+class SpoggyApp extends Polymer.Element {
+  static get is() { return 'spoggy-app'; }
+  static get properties() {
+    return {
+      prop1: {
+        type: String,
+        value: 'spoggy-app'
+      },
+      socket: {
+        type: Object
+      },
+      status:{
+        type: String,
+        observer: '_consoleStatus'
+      },
+      connected:{
+        type: Boolean,
+      },
+      tickDelay: {
+        type: Number,
+        value: 1000       // 15ms selon source, tempo pour envoi du snapshot par le serveur pour un jeu
+      },
+      visibleChat: {
+        type: Boolean,
+        value : true
+      },
+      actionstosend: {
+        type: Array,
+        value:[]
+      },
+      visibleIcon: {
+        type: Boolean,
+        value : false
+      },
+    };
+  }
+
+  ready() {
+    super.ready();
+    var app=this;
+    var tickInterval = setInterval(function() {
+      if (app.connected){
+        //  console.log("tick spog-app");
+        if (app.actionstosend.length > 0) {
+          console.log(app.actionstosend);
+          app.socket.emit('newActions', app.actionstosend);
+          app.actionstosend = [];
+        }}
+      }, this.tickDelay);
+    }
+
+    _consoleStatus(newValue, oldValue){
+      console.log(oldValue +" -> "+ newValue);
+      if(newValue =="connected"){
+        this.connected = true;
+      }else{
+        this.connected = false;
+      }
+    }
+    toggleChat(){
+      this.visibleChat = !this.visibleChat;
+    }
+
+
+  }
+
+  window.customElements.define(SpoggyApp.is, SpoggyApp);
+  </script>
+</dom-module>

@@ -1,0 +1,63 @@
+# Recréer SPOGGY from scratch
+
+# prérequis
+nodejs installé avec package polymer-cli et bower
+
+1) INSTALLATION D'un serveur nodejs+ Application Polymer
+mkdir spoggy
+cd spoggy
+npm init --> tout valider
+creer fichier index.js
+mkdir public
+cd public
+polymer init --> polymer-2-application --> application-name: spoggy , tout valider
+cd ..
+npm install --save express socket.io
+modifier index.js :
+```
+// Setup basic express server
+var express = require('express');
+var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+var port = process.env.PORT || 3000;
+
+server.listen(port, function () {
+console.log('Server listening at port %d', port);
+});
+
+// Routing
+app.use(express.static(__dirname + '/public'));
+
+//Socket.IO
+io.on('connect', function(){
+console.log("connecte");
+});
+io.on('event', function(data){
+console.log(data);
+});
+io.on('disconnect', function(){
+console.log("deconnecte");
+});
+```
+
+pour tester : node . --> Server listening at port 3000 --> http://127.0.0.1:3000 --> "hello-public-app"
+
+2) Création des différents WebComposants
+cd public
+cd src
+# pour les <modules> suivant : spog-socket  effectuer :
+mkdir <module>
+cd <module>
+polymer init -> polymer-2-element
+
+modifier dans /public/src/spog-socket/spog-socket.html
+la ligne
+<link rel="import" href="../polymer/polymer-element.html">
+en
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+pour utiliser les bower_components
+
+dans spog-app.html
+inclure spog-socket avec la ligne
+<link rel="import" href="../spog-socket/spog-socket.html">

@@ -1,0 +1,23 @@
+{
+  "name": "spoggy",
+  "version": "1.0.0",
+  "description": "[Demo](http://spoggy0.firebaseapp.com) , en mode solo, non synchronisé, fonctionnalités réduites.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scenaristeur/spoggy.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/scenaristeur/spoggy/issues"
+  },
+  "homepage": "https://github.com/scenaristeur/spoggy#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4"
+  }
+}
