@@ -335,6 +335,7 @@ app.tickInterval = setInterval(function() {
   }
 
   if ((app.data != app.network.body.data)  && !app.eyehidden){
+    console.log("bip2");
     app.data = [];
     app.data = app.network.body.data;
     console.log(app.data);
@@ -904,10 +905,10 @@ populateVis(db, network) {
     this.tickInterval = setInterval(function() {
       if (!app.eyehidden){
         console.log("kick");
-        app.eyedata = [];
+      //  app.eyedata = [];
         app.eyedata = app.network.body.data;
       }
-    }, 2000);
+    }, 5000);
   }
 
 }

@@ -34,6 +34,7 @@ class SpogSocket extends Polymer.Element {
       status: {
         type: String,
         notify: true,
+        //  observer: '_consoleStatus'
       },
       /**
       * Internal reference to the WebSocket
@@ -48,6 +49,10 @@ class SpogSocket extends Polymer.Element {
         type: Object,
         value: [],
       },
+      retry: {
+        type: Number,
+        value:10
+      }
 
     };
   }
@@ -66,6 +71,18 @@ class SpogSocket extends Polymer.Element {
       handler,
     });
   }
+/*
+  _consoleStatus(newValue, oldValue){
+    console.log(oldValue +" -> "+ newValue);
+    if(oldValue == "reconnecting" && newValue =="disconnected"){
+    this.retry --;
+    console.log(this.retry);
+    if (this.retry <= 0){
+      this.socket = null;
+    }
+  }
+}*/
+
 
   connect(connectUri, token) {
     /*this.socket = io(connectUri, {

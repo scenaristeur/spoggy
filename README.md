@@ -21,8 +21,9 @@ installation :
 ```
 git clone https://github.com/scenaristeur/spoggy.git
 cd spoggy
-```
 npm install && cd public/ && bower install && cd .. && node .
+
+```
 
 ```
 * NODE DEPENDENCIES
@@ -78,4 +79,3 @@ input[type="color"].native {
   margin: 0;
   @apply --color-input;
 }
-
