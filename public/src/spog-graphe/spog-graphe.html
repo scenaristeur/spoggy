@@ -317,6 +317,7 @@ ready() {
   this.selectedShape = "ellipse";
   this.selectedType = "node";
 
+
   this.network = this.networkDivInitialize(this.$.mynetwork, this);
   // When possible, use afterNextRender to defer non-critical    // work until after first paint.
   /*Polymer.RenderStatus.afterNextRender(this, function() {
@@ -332,6 +333,7 @@ app.tickInterval = setInterval(function() {
     app.populateVis(app.db2populate, app.network);
     //log(app.db2populate.length + "/" + app.tiplets2popLength);
     app.network.fit();
+
   }
 
   if ((app.data != app.network.body.data)  && !app.eyehidden){
@@ -507,10 +509,22 @@ _socketChanged(s){
 
 
   this.socket.on('initDb', function(db){
-    console.log(db);
-    app.db2populate = db;
-    app.populateVis(app.db2populate, app.network);
-    app.triplets2popLength = app.db2populate.length;
+    app.params = app.recupParams();
+    console.log(app.params);
+    if (Object.keys(app.params).length === 0){ // si aucun parametre dans l'adresse de la page, on utilise la bdd
+          console.log(db);
+      app.db2populate = db;
+      app.populateVis(app.db2populate, app.network);
+      app.triplets2popLength = app.db2populate.length;
+    }else{
+        console.log(app.network)
+          console.log(app.params);
+          importFromParam(app.params,app.network,app);
+          //var retourCommande = catchCommande(message,this.network,this);
+        //  app.$.filepicker = app.params.source;
+  }
+
+
   });
 
   this.socket.on('initFuz', function(initFuz){
@@ -1608,7 +1622,21 @@ setTimeout(function(){
 }, 100);
 }
 
-
+recupParams(){
+  var params = (function(a) {
+    if (a == "") return {};
+    var b = {};
+    for (var i = 0; i < a.length; ++i)
+    {        var p=a[i].split('=', 2);
+    if (p.length == 1)
+    b[p[0]] = "";
+    else
+    b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+  }
+  return b;
+})(window.location.search.substr(1).split('&'));
+return params;
+}
 
 }
 

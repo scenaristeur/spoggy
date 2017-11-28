@@ -9,6 +9,8 @@ Import : commande /i
 Export : commande /e
 
 [exemples de fichiers exportés depuis spoggy](https://github.com/scenaristeur/smag0-connaissance/tree/master/meet-up_conf)
+pour les consulter, vous pouvez utiliser passer la source en paramètre, comme dans l'exemple ci -dessous :
+[http://127.0.0.1:3000/?source=https://raw.githubusercontent.com/scenaristeur/smag0-connaissance/master/meet-up_conf/de_OWL_a_Fameus_spoggy_nodes_edges_1511030598081.json](http://127.0.0.1:3000/?source=https://raw.githubusercontent.com/scenaristeur/smag0-connaissance/master/meet-up_conf/de_OWL_a_Fameus_spoggy_nodes_edges_1511030598081.json)
 
 
 Le code source de l'application SPOGGY sera bientôt disponible.
