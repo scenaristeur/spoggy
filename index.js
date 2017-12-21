@@ -482,7 +482,9 @@ function initGraphs(socket){
     }, function(err, list) {
       console.log("1list");
       console.log(list);
+      if (list != undefined){
       socket.emit('initDb', list);
+    }
     });
   }
 }
